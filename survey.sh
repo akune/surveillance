@@ -3,7 +3,7 @@ source /conf/cameras.conf
 secondsBetweenConversions=600
 startTime=$(date +%s)
 while true; do
-  for camera in $cameras; do 
+  for camera in $cameras; do
     name="${camera}_name"; name=${!name:-$camera}
     url="${camera}_url"; url=${!url}
     user="${camera}_user"; user=${!user}
@@ -21,8 +21,9 @@ while true; do
     date=$(date --date="$d" +%Y-%m-%d-%H-%M-%S)
     filename=$prefix/$date.jpg
     tmpfilename=$filename.tmp
-    (/usr/bin/wget $url -O $tmpfilename --user=$user --password=$password && \
-    imgDate=`date --date="$d" +%Y-%m-%d\ %H:%M:%S\ \(%Z\)` && convert "$tmpfilename" -gravity NorthWest -pointsize 22 -fill white -annotate +30+30 "$imgDate" "$tmpfilename") && mv $tmpfilename $filename &
+    ( (/usr/bin/wget $url -O $tmpfilename --user=$user --password=$password && \
+     imgDate=`date --date="$d" +%Y-%m-%d\ %H:%M:%S\ \(%Z\)` && \
+     convert "$tmpfilename" -gravity NorthWest -pointsize 22 -fill white -annotate +30+30 "$imgDate" "$tmpfilename") && mv $tmpfilename $filename && (cd /cameras; ln -sf ${camera}/${date}.jpg ${camera}.jpg) ) &
     lastConversion="${camera}_lastConversion"; lastConversion=${!lastConversion:-$startTime}
     if [ $(expr $(date +%s) - $lastConversion) -gt $conversionInterval ]; then
       echo Triggering converson
