@@ -1,5 +1,3 @@
-#secondsBetweenConversions=1800
-secondsBetweenConversions=600
 startTime=$(date +%s)
 while true; do
   source /conf/cameras.conf
