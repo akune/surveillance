@@ -1,8 +1,8 @@
-source /conf/cameras.conf
 #secondsBetweenConversions=1800
 secondsBetweenConversions=600
 startTime=$(date +%s)
 while true; do
+  source /conf/cameras.conf
   for camera in $cameras; do
     name="${camera}_name"; name=${!name:-$camera}
     url="${camera}_url"; url=${!url}
