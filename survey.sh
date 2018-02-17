@@ -23,7 +23,7 @@ while true; do
     annotation=$(eval echo "$annotation")
     filename=$prefix/$date.jpg
     tmpfilename=$filename.tmp
-    ( (/usr/bin/wget $url -O $tmpfilename --user=$user --password=$password && \
+    ( ((/usr/bin/wget $url -O $tmpfilename --user=$user --password=$password || (echo "Could not get camera image"; rm "$tmpfilename"; false)) && \
      imgDate=`date --date="$d" +"$annotation"` && \
      convert "$tmpfilename" -gravity NorthWest -pointsize 22 -fill white -annotate +30+30 "$imgDate" "$tmpfilename") && mv $tmpfilename $filename && (cd $camerasRoot; ln -sf ${camera}/${date}.jpg ${camera}.jpg) ) &
     lastConversion="${camera}_lastConversion"; lastConversion=${!lastConversion:-$startTime}
