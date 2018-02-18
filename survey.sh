@@ -3,6 +3,8 @@ camerasRoot="/cameras"
 find $camerasRoot -name "*.tmp" -exec rm {} \;
 while true; do
   source /conf/cameras.conf
+  json="{\"cameras\": ["
+  cams=""
   for camera in $cameras; do
     name="${camera}_name"; name=${!name:-$camera}
     url="${camera}_url"; url=${!url}
@@ -11,6 +13,16 @@ while true; do
     conversionInterval="${camera}_conversionInterval"; conversionInterval=${!conversionInterval:-3600}
     echo "$camera ($name) / $url"
     annotation="${camera}_annotation"; annotation=${!annotation:-"$name %Y-%m-%d\ %H:%M:%S\ \(%Z\)"}
+    if [ -n "$cams" ]; then
+      cams=${cams}","
+    fi
+    cams=${cams}"{"
+    cams=${cams}"\"camera\":\"${camera}\""
+    cams=${cams}", "
+    cams=${cams}"\"name\":\"${name}\""
+    cams=${cams}", "
+    cams=${cams}"\"latestImage\":\"${camera}.jpg\""
+    cams=${cams}"}"
 
     prefix=$camerasRoot/${camera}
     if [ ! -d $prefix ]; then
@@ -33,5 +45,7 @@ while true; do
       eval ${camera}_lastConversion=$(date +%s)
     fi
   done
+  json=${json}${cams}"]}"
+  echo $json > $camerasRoot/index.json.new && mv $camerasRoot/index.json.new $camerasRoot/index.json
   sleep 1
 done
