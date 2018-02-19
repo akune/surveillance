@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <meta http-equiv="Pragma" content="no-cache">
+    <style>
+      img.main {
+        max-width: 640px;
+        max-height: 480px;
+        vertical-align: top;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script>
+    $.getJSON('index.json?unique_' + $.now(), function(data) {
+      $('#images').html('');
+      $.each(data.cameras, function(i, camera) {
+        $('#images').append('<img class="main" id="'+camera.camera+'"/>');
+        function update() {
+          $('#'+camera.camera).attr("src", camera.latestImage + '?unique_' + $.now());
+          setTimeout(update,1000);
+        }
+        setTimeout(update,10);
+
+      })
+    });
+    </script>
+    <div id="images"></div>
+  </body>
+</html>

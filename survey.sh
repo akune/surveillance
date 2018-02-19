@@ -1,6 +1,9 @@
 startTime=$(date +%s)
 camerasRoot="/cameras"
 find $camerasRoot -name "*.tmp" -exec rm {} \;
+if [ ! -f /cameras/index.html ]; then
+  cp /index.html cameras/index.html
+fi
 while true; do
   source /conf/cameras.conf
   json="{\"cameras\": ["
